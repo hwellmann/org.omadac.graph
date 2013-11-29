@@ -1,6 +1,6 @@
 import ceylon.collection { MutableSet }
 import org.omadac.graph { EdgeSetFactory }
-class DirectedEdgeContainer<Vertex, Edge>(EdgeSetFactory<Vertex, Edge> edgeSetFactory, Vertex vertex) 
+shared class DirectedEdgeContainer<Vertex, Edge>(EdgeSetFactory<Vertex, Edge> edgeSetFactory, Vertex vertex) 
 		given Vertex satisfies Object
 		given Edge satisfies Object {
 	

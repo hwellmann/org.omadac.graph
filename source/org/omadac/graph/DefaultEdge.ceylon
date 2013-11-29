@@ -1,3 +1,4 @@
+import org.omadac.graph.impl { IntrusiveEdge }
 shared class DefaultEdge<Vertex>(Vertex source, Vertex target)
     extends IntrusiveEdge<Vertex>(source, target)
 	given Vertex satisfies Object {

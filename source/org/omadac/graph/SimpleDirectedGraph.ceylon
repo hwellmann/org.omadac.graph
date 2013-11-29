@@ -1,5 +1,6 @@
 import ceylon.language.meta.model { Class, IncompatibleTypeException }
 import ceylon.collection { MutableSet, HashMap, HashSet, MutableMap }
+import org.omadac.graph.impl { Specifics, DirectedEdgeContainer }
 
 shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, EdgeFactory<Vertex, Edge> ef = DefaultEdgeFactory<Vertex, Edge>(klass), Boolean allowingLoops = false)
 		extends AbstractBaseGraph<Vertex, Edge>(ef)

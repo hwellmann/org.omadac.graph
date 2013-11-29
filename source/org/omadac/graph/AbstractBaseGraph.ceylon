@@ -1,4 +1,5 @@
 import ceylon.collection { HashMap,  MutableMap }
+import org.omadac.graph.impl { Specifics, IntrusiveEdge }
 
 shared abstract class AbstractBaseGraph<Vertex, Edge> (shared actual EdgeFactory<Vertex, Edge> edgeFactory, 
 shared Boolean allowingMultipleEdges = false, 
