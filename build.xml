@@ -1,0 +1,40 @@
+<project name="org.omadac.graph">
+    
+	<property file="build.properties"/>	
+	<property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
+	 
+	<target name="ceylon-ant-taskdefs">
+	 
+	  <!-- Create a path to the ceylon-ant.jar -->
+	  <path id="ant-tasks">
+	    <pathelement location="${ceylon.ant.lib}"/>
+	  </path>
+	 
+	  <!-- use a typedef to define all the ceylon tasks together -->
+	  <typedef resource="com/redhat/ceylon/ant/antlib.xml" classpathref="ant-tasks"/>
+	 
+	</target>
+	
+	<target name="clean">
+		<delete dir="modules"/>
+	</target>
+	
+	<target name="compile" depends="ceylon-ant-taskdefs">
+	  <ceylon-compile src="source" out="modules" encoding="UTF-8">
+	    <module name="org.omadac.graph"/>
+	  </ceylon-compile>
+	</target>
+	
+	<target name="test-compile" depends="compile">
+	  <ceylon-compile src="test" out="modules" encoding="UTF-8">
+	    <module name="test.org.omadac.graph"/>
+	  </ceylon-compile>
+	</target>
+	
+	<target name="test" depends="test-compile">
+	  <ceylon-run module="test.org.omadac.graph">
+	  	<rep url="modules"/>
+	  </ceylon-run>
+	</target>
+
+</project>
