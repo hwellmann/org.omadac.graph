@@ -85,11 +85,12 @@ class PairingHeapTest() {
 	
 	shared test void iterate() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
-		Integer numEntries = 100;
+		Integer numEntries = 5;
 		Random random = Random(43);
 		for (i in 1..numEntries) {
 			Integer key = random.nextInt(1000);
 			heap.insert(key, key.string);
+			print(key);
 		}
 		assertFalse(heap.empty);
 		assertEquals(heap.size, numEntries);

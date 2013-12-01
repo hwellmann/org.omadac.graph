@@ -5,18 +5,16 @@ shared class PairingHeap<Key, Item>()
 		given Item satisfies Object {
 	
 	alias Node => PairingHeapNode<Key,Item>;
-	
+
 	variable Integer numItems = 0;
 	variable Integer modCount = 0;
 	
 	variable Node? min = null;
 	
-	class PairingHeapNode<Key, Item>(Key k, Item item)
+	class PairingHeapNode<Key, Item>(Key k, Item item) extends HeapEntry<Key, Item>(k, item)
 			satisfies Comparable<PairingHeapNode<Key,Item>> 
 			given Key satisfies Comparable<Key>
 			given Item satisfies Object {
-		
-		shared variable Key->Item entry = k->item;
 		
 		shared variable Node? child = null; 
 		shared variable Node? next = null; 
@@ -41,17 +39,16 @@ shared class PairingHeap<Key, Item>()
 		
 		shared Boolean ownedBy(PairingHeap<Key, Item> heap) => heap == outer;
 		
-		shared actual String string => entry.string;
 	}
 	
 	class EntryIterator() 
-	    satisfies Iterator<Key->Item> {
+	    satisfies Iterator<HEntry> {
 
 	    variable Node? current = min;
 	    
-		shared actual <Key->Item>|Finished next(){
+		shared actual HEntry|Finished next(){
 			if (exists node=current) {
-				Key->Item entry = node.entry;
+				HEntry entry = node;
 				current = successor(node);
 				return entry;
 			}
@@ -89,7 +86,7 @@ shared class PairingHeap<Key, Item>()
 	
 	shared actual Integer size => numItems;
 	
-	shared actual Object insert(Key k, Item item) {
+	shared actual HEntry insert(Key k, Item item) {
 		Node node = PairingHeapNode(k, item);
 		if (size == 0) {
 			min = node;
@@ -113,18 +110,18 @@ shared class PairingHeap<Key, Item>()
 		modCount++;
 	}
 	
-	shared actual void decreaseKey(Object entry, Key k) {
+	shared actual void decreaseKey(HEntry entry, Key k) {
 		assert (holdsEntry(entry));
 		
 		if (is Node entry) {
-			assert (! entry.entry.key < k);
-			entry.entry = k->entry.entry.item;
+			assert (! entry.key < k);
+			entry.key = k;
 			relink(entry);
 			modCount++;
 		}
 	}
 	
-	shared actual void delete(Object entry) {
+	shared actual void delete(HEntry entry) {
 		if (is Node entry) {
 			entry.smallest = true;
 			
@@ -140,16 +137,16 @@ shared class PairingHeap<Key, Item>()
 		}
 	}
 	
-	shared actual Boolean holdsEntry(Object entry) {
+	shared actual Boolean holdsEntry(HEntry entry) {
 		if (is Node entry) {
 			return entry.ownedBy(this);
 		}
 		return false;
 	}
 	
-	shared actual Iterator<Key->Item> iterator() => EntryIterator();
+	shared actual Iterator<HEntry> iterator() => EntryIterator();
 	
-	shared actual Key->Item removeMinimum() {
+	shared actual HEntry removeMinimum() {
 		assert (exists oldMin = min);
 		if (size == 1) {
 			min = null;
@@ -168,16 +165,16 @@ shared class PairingHeap<Key, Item>()
 		oldMin.child = null;
 		oldMin.next = null;
 		oldMin.previous = null;		
-		return oldMin.entry;
+		return oldMin;
 	}
 	
 	shared actual void union(Heap<Key,Item> that) {
 		
 	}
 	
-	shared actual Key->Item minimum  {
+	shared actual HEntry minimum  {
 		assert (exists m = min);
-		return m.entry;
+		return m;
 	}
 	
 	Node join(Node first, Node? _second) {
