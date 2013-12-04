@@ -122,10 +122,10 @@ shared class PairingHeap<Key, Item>()
 	}
 	
 	shared actual void delete(HEntry entry) {
-		if (is Node entry) {
+		if (is Node entry, exists m=min) {
 			entry.smallest = true;
 			
-			if (entry == minimum) {
+			if (entry == m) {
 				removeMinimum();
 				return;
 			}
@@ -172,9 +172,8 @@ shared class PairingHeap<Key, Item>()
 		
 	}
 	
-	shared actual HEntry minimum  {
-		assert (exists m = min);
-		return m;
+	shared actual HEntry? minimum  {
+		return min;
 	}
 	
 	Node join(Node first, Node? _second) {

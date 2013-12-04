@@ -3,7 +3,7 @@ import ceylon.test {
 	assertTrue,
 	assertEquals,
 	assertFalse,
-	assertThatException
+	assertNull
 }
 
 import org.omadac.graph.collection {
@@ -18,7 +18,7 @@ class PairingHeapTest() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
 		assertTrue(heap.empty);
 		assertEquals(heap.size, 0);
-		assertThatException(() => heap.minimum);
+		assertNull(heap.minimum);
 	}
 
 	shared test void insertOneEntry() {
@@ -26,8 +26,8 @@ class PairingHeapTest() {
 		heap.insert(10, "one");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 1);
-		assertEquals(heap.minimum.key, 10);
-		assertEquals(heap.minimum.item, "one");
+		assertEquals(heap.minimum?.key, 10);
+		assertEquals(heap.minimum?.item, "one");
 	}
 	
 	shared test void insertTwoEntriesAscending() {
@@ -36,14 +36,14 @@ class PairingHeapTest() {
 		heap.insert(20, "two");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 2);
-		assertEquals(heap.minimum.key, 10);
-		assertEquals(heap.minimum.item, "one");
+		assertEquals(heap.minimum?.key, 10);
+		assertEquals(heap.minimum?.item, "one");
 		
 		value min = heap.removeMinimum();
 		assertEquals(min.key, 10);
 		assertEquals(min.item, "one");
-		assertEquals(heap.minimum.key, 20);
-		assertEquals(heap.minimum.item, "two");
+		assertEquals(heap.minimum?.key, 20);
+		assertEquals(heap.minimum?.item, "two");
 	}
 
 	shared test void insertTwoEntriesDescending() {
@@ -52,14 +52,14 @@ class PairingHeapTest() {
 		heap.insert(10, "one");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 2);
-		assertEquals(heap.minimum.key, 10);
-		assertEquals(heap.minimum.item, "one");
+		assertEquals(heap.minimum?.key, 10);
+		assertEquals(heap.minimum?.item, "one");
 		
 		value min = heap.removeMinimum();
 		assertEquals(min.key, 10);
 		assertEquals(min.item, "one");
-		assertEquals(heap.minimum.key, 20);
-		assertEquals(heap.minimum.item, "two");
+		assertEquals(heap.minimum?.key, 20);
+		assertEquals(heap.minimum?.item, "two");
 	}
 	
 	
