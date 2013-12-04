@@ -32,9 +32,9 @@
 	</target>
 	
 	<target name="test" depends="test-compile">
-	  <ceylon-run module="test.org.omadac.graph">
-	  	<rep url="modules"/>
-	  </ceylon-run>
+	  <ceylon-test>
+	  	 <module name="test.org.omadac.graph"/>
+	  </ceylon-test>
 	</target>
 
 </project>
