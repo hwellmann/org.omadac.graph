@@ -3,7 +3,7 @@ import org.omadac.graph {
 	AbstractBaseGraph
 }
 import ceylon.language.meta.model { Class, IncompatibleTypeException }
-import ceylon.collection { MutableSet, HashMap, HashSet, MutableMap }
+import ceylon.collection { HashMap, MutableMap }
 import org.omadac.graph.impl { Specifics, UndirectedEdgeContainer }
 
 shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, EdgeFactory<Vertex, Edge> ef = DefaultEdgeFactory<Vertex, Edge>(klass))
@@ -81,39 +81,24 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 			return getEdgeContainer(v).edges;
 		}
 		
+		Boolean joins(Edge e, Vertex sourceVertex, Vertex targetVertex) => sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
+		
 		shared actual Set<Edge> getAllEdges(Vertex sourceVertex, Vertex targetVertex) {
 			
-			if (containsVertex(sourceVertex)
-					&& containsVertex(targetVertex))
+			if (containsVertex(sourceVertex) && containsVertex(targetVertex))
 			{
-				MutableSet<Edge> edges = HashSet<Edge>();
-				
-				UndirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
-				for (Edge e in ec.edges) {
-					Boolean equalsStraight = sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
-					Boolean equalsReverse = sourceVertex.equals(edgeTarget(e)) && targetVertex.equals(edgeSource(e));
-					if (equalsStraight || equalsReverse) {
-						edges.add(e);
-					}
-				}
-				return LazySet(edges);
+				value ec = getEdgeContainer(sourceVertex);
+				return LazySet(ec.edges.select((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex))));
 			}
 			else {
 				return emptySet;
 			}
 		}
-		
+
 		shared actual Edge? getEdge(Vertex sourceVertex, Vertex targetVertex) {
-			if (containsVertex(sourceVertex)
-					&& containsVertex(targetVertex)) {
-				UndirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
-				for (Edge e in ec.edges) {
-					Boolean equalsStraight = sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
-					Boolean equalsReverse = sourceVertex.equals(edgeTarget(e)) && targetVertex.equals(edgeSource(e));
-					if (equalsStraight || equalsReverse) {
-						return e;
-					}
-				}
+			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
+				value ec = getEdgeContainer(sourceVertex);
+				return ec.edges.find((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex)));
 			}
 			return null;
 		}

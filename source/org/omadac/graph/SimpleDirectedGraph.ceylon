@@ -77,18 +77,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		
 		shared actual Set<Edge> getAllEdges(Vertex sourceVertex, Vertex targetVertex) {
 			
-			if (containsVertex(sourceVertex)
-					&& containsVertex(targetVertex))
-			{
-				MutableSet<Edge> edges = HashSet<Edge>();
-				
-				DirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
-				for (Edge e in ec.outgoingEdges) {
-					if (edgeTarget(e).equals(targetVertex)) {
-						edges.add(e);
-					}
-				}
-				return LazySet(edges);
+			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
+				return LazySet(getEdgeContainer(sourceVertex).outgoingEdges.select((Edge e) => edgeTarget(e).equals(targetVertex)));
 			}
 			else {
 				return emptySet;
@@ -96,14 +86,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		}
 		
 		shared actual Edge? getEdge(Vertex sourceVertex, Vertex targetVertex) {
-			if (containsVertex(sourceVertex)
-					&& containsVertex(targetVertex)) {
-				DirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
-				for (Edge e in ec.outgoingEdges) {
-					if (edgeTarget(e).equals(targetVertex)) {
-						return e;
-					}
-				}
+			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
+				return getEdgeContainer(sourceVertex).outgoingEdges.find((Edge e) => edgeTarget(e).equals(targetVertex));
 			}
 			return null;
 		}
