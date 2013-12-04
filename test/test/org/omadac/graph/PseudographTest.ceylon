@@ -3,17 +3,19 @@ import ceylon.test {
 	assertTrue,
 	assertEquals,
 	assertFalse,
-	assertNull, assertNotNull, assertThatException
+	assertNull,
+	assertNotNull
 }
 
 import org.omadac.graph {
 	DefaultEdge,
-	Multigraph
+	Pseudograph
 }
 
 
-class MultigraphTest() {
-	Multigraph<Integer,DefaultEdge<Integer>> g = Multigraph(`DefaultEdge<Integer>`); 
+class PseudographTest() {
+	alias Edge => DefaultEdge<Integer>;
+	Pseudograph<Integer,DefaultEdge<Integer>> g = Pseudograph(`DefaultEdge<Integer>`); 
 	
 	shared test void newGraphShouldHaveNoVertices() {		
 		assertTrue(g.vertexSet.empty);
@@ -98,10 +100,27 @@ class MultigraphTest() {
 		assertEquals(g.allEdges(20, 10), g.allEdges(10, 20));			
 	}
 	
-	shared test void shouldNotAllowLoops() {
+	shared test void shouldAllowLoops() {
 		g.addVertex(10);
-		assertThatException(() => g.createEdge(10, 10))
-				.hasType(`AssertionException`).hasMessage("loops not allowed");
-	}
-	
+		Edge? edge = g.createEdge(10, 10);
+		assert (exists edge);
+		assertEquals(g.edgeSet.size, 1);
+		assertEquals(g.edgeSource(edge), 10);
+		assertEquals(g.edgeTarget(edge), 10);
+		assertEquals(g.degreeOf(10), 2);
+	}	
+
+	shared test void shouldAllowMultipleLoops() {
+		g.addVertex(10);
+		Edge? edge = g.createEdge(10, 10);
+		assert (exists edge);
+
+		Edge? edge2 = g.createEdge(10, 10);
+		assert (exists edge2);
+
+		assertEquals(g.edgeSet.size, 2);
+		assertEquals(g.edgeSource(edge2), 10);
+		assertEquals(g.edgeTarget(edge2), 10);
+		assertEquals(g.degreeOf(10), 4);
+	}	
 }

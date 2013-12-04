@@ -1,6 +1,7 @@
 import org.omadac.graph.impl {
 	Specifics
 }
+import org.omadac.graph { UndirectedGraph, AbstractUndirectedGraph }
 
 shared class Multigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 		extends AbstractUndirectedGraph<Vertex, Edge>(edgeFactory, true)
@@ -10,10 +11,7 @@ shared class Multigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 	
 	shared class MultigraphSpecifics() extends UndirectedSpecifics() {
 		
-		shared actual Integer degreeOf(Vertex v) {			
-			return edgeContainer(v).edges.fold(0, (Integer d, Edge e) => 
-					edgeSource(e) == edgeTarget(e) then d+2 else d+1);			
-		}		
+		shared actual Integer degreeOf(Vertex v) => edgeContainer(v).edgeCount;
 	}		
 	
 	shared actual Specifics<Vertex,Edge> createSpecifics() => MultigraphSpecifics();	

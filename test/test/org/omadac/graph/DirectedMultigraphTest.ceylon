@@ -20,7 +20,7 @@ class DirectedMultigraphTest() {
 	shared test void newGraphShouldHaveNoVertices() {		
 		assertTrue(g.vertexSet.empty);
 	}	
-
+	
 	shared test void newGraphShouldHaveNoEdges() {		
 		assertTrue(g.edgeSet.empty);
 	}
@@ -37,14 +37,9 @@ class DirectedMultigraphTest() {
 	shared test void addSingleEdge() {
 		g.addVertex(10);
 		g.addVertex(20);
-		value e = g.createEdge(10, 20);
-		if (exists edge = e) {
-			assertEquals(10, g.edgeSource(edge));
-			assertEquals(20, g.edgeTarget(edge));
-		}
-		else {
-			assertFalse(true);
-		}
+		assert (exists edge = g.createEdge(10, 20));
+		assertEquals(10, g.edgeSource(edge));
+		assertEquals(20, g.edgeTarget(edge));
 	}
 	
 	shared test void reverseEdgeShouldNotExist() {
@@ -70,17 +65,12 @@ class DirectedMultigraphTest() {
 	shared test void removingEdgeShouldNotRemoveVertices() {
 		g.addVertex(10);
 		g.addVertex(20);
-		value e = g.createEdge(10, 20);
-		if (exists edge = e) {
-			assertTrue(g.removeEdge(edge));
-			assertTrue(g.edgeSet.empty);		 
-			assertTrue(g.containsVertex(10));
-			assertTrue(g.containsVertex(20));
-			assertEquals(g.vertexSet.size, 2);			
-		}
-		else {
-			assertFalse(true);
-		}
+		assert (exists edge = g.createEdge(10, 20));
+		assertTrue(g.removeEdge(edge));
+		assertTrue(g.edgeSet.empty);		 
+		assertTrue(g.containsVertex(10));
+		assertTrue(g.containsVertex(20));
+		assertEquals(g.vertexSet.size, 2);			
 	}
 	
 	shared test void shouldAllowParallelEdges() {

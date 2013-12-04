@@ -3,7 +3,7 @@ import ceylon.test {
 	assertTrue,
 	assertEquals,
 	assertFalse,
-	assertNull
+	assertNull, assertThatException
 }
 
 import org.omadac.graph {
@@ -94,5 +94,11 @@ class SimpleGraphTest() {
 		g.createEdge(10, 20);
 		assertNull(g.createEdge(10, 20));
 		assertEquals(g.edgeSet.size, 1);			
+	}
+	
+	shared test void shouldNotAllowLoops() {
+		g.addVertex(10);
+		assertThatException(() => g.createEdge(10, 10))
+				.hasType(`AssertionException`).hasMessage("loops not allowed");
 	}
 }
