@@ -4,7 +4,7 @@ shared abstract class AbstractGraph<Vertex, Edge>()
 		given Edge satisfies Object {
 
     shared actual Boolean adjacent(Vertex sourceVertex, Vertex targetVertex) {
-        return getEdge(sourceVertex, targetVertex) exists;
+        return edge(sourceVertex, targetVertex) exists;
     }
     
     shared actual Boolean removeAllEdges({Edge*} edges) {
@@ -17,8 +17,8 @@ shared abstract class AbstractGraph<Vertex, Edge>()
         return modified;
     }
 
-    shared actual Set<Edge> removeAllIncidentEdges(Vertex sourceVertex, Vertex targetVertex) {
-        Set<Edge> removed = getAllEdges(sourceVertex, targetVertex);
+    shared actual Set<Edge> removeIncidentEdges(Vertex sourceVertex, Vertex targetVertex) {
+        Set<Edge> removed = allEdges(sourceVertex, targetVertex);
         if (! removed.empty) {
             removeAllEdges(removed);
         }
@@ -62,9 +62,9 @@ shared abstract class AbstractGraph<Vertex, Edge>()
 			else {
 				sb.append("{");
 			}
-			sb.append(getEdgeSource(e).string);
+			sb.append(edgeSource(e).string);
 			sb.append(",");
-			sb.append(getEdgeTarget(e).string);
+			sb.append(edgeTarget(e).string);
 			if (directed) {
 				sb.append(")");
 			} else {
@@ -81,12 +81,12 @@ shared abstract class AbstractGraph<Vertex, Edge>()
         variable Integer hash = vertexSet.hash;
         for (Edge e in edgeSet) {
             variable Integer part = e.hash;
-            Integer source = getEdgeSource(e).hash;
-            Integer target = getEdgeTarget(e).hash;
+            Integer source = edgeSource(e).hash;
+            Integer target = edgeTarget(e).hash;
             
             Integer pairing = ((source + target) * (source + target + 1)/2) + target;
             part = 27 * part + pairing;
-            Integer weight = getEdgeWeight(e).integer;
+            Integer weight = edgeWeight(e).integer;
             part = 27 * (weight.xor(weight.rightLogicalShift(32)));
             hash += part;
         }
@@ -110,14 +110,14 @@ shared abstract class AbstractGraph<Vertex, Edge>()
                 if (! that.containsEdge(e)) {
                     return false;
                 }
-                Vertex source = getEdgeSource(e);
-                Vertex target = getEdgeTarget(e);
+                Vertex source = edgeSource(e);
+                Vertex target = edgeTarget(e);
                 
-                if (!that.getEdgeSource(e).equals(source) 
-            	    || !that.getEdgeSource(e).equals(target)) {
+                if (!that.edgeSource(e).equals(source) 
+            	    || !that.edgeSource(e).equals(target)) {
                     return false;
                 }
-                Float diff = getEdgeWeight(e) - that.getEdgeWeight(e);
+                Float diff = edgeWeight(e) - that.edgeWeight(e);
                 if (diff.magnitude > 1.0E-7) {
                     return false;
                 }

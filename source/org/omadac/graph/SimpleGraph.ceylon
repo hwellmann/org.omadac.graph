@@ -39,8 +39,8 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 		
 		
 		shared actual void addEdgeToTouchingVertices(Edge e) {
-			Vertex source = getEdgeSource(e);
-			Vertex target = getEdgeTarget(e);
+			Vertex source = edgeSource(e);
+			Vertex target = edgeTarget(e);
 			
 			getEdgeContainer(source).addEdge(e);
 			
@@ -90,8 +90,8 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 				
 				UndirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
 				for (Edge e in ec.edges) {
-					Boolean equalsStraight = sourceVertex.equals(getEdgeSource(e)) && targetVertex.equals(getEdgeTarget(e));
-					Boolean equalsReverse = sourceVertex.equals(getEdgeTarget(e)) && targetVertex.equals(getEdgeSource(e));
+					Boolean equalsStraight = sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
+					Boolean equalsReverse = sourceVertex.equals(edgeTarget(e)) && targetVertex.equals(edgeSource(e));
 					if (equalsStraight || equalsReverse) {
 						edges.add(e);
 					}
@@ -108,8 +108,8 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 					&& containsVertex(targetVertex)) {
 				UndirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
 				for (Edge e in ec.edges) {
-					Boolean equalsStraight = sourceVertex.equals(getEdgeSource(e)) && targetVertex.equals(getEdgeTarget(e));
-					Boolean equalsReverse = sourceVertex.equals(getEdgeTarget(e)) && targetVertex.equals(getEdgeSource(e));
+					Boolean equalsStraight = sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
+					Boolean equalsReverse = sourceVertex.equals(edgeTarget(e)) && targetVertex.equals(edgeSource(e));
 					if (equalsStraight || equalsReverse) {
 						return e;
 					}
@@ -139,8 +139,8 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 		}
 		
 		shared actual void removeEdgeFromTouchingVertices(Edge e) {
-			Vertex source = getEdgeSource(e);
-			Vertex target = getEdgeTarget(e);
+			Vertex source = edgeSource(e);
+			Vertex target = edgeTarget(e);
 			
 			getEdgeContainer(source).removeEdge(e);
 			if (!source.equals(target)) {

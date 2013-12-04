@@ -33,8 +33,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		
 		
 		shared actual void addEdgeToTouchingVertices(Edge e) {
-			Vertex source = getEdgeSource(e);
-			Vertex target = getEdgeTarget(e);
+			Vertex source = edgeSource(e);
+			Vertex target = edgeTarget(e);
 			
 			getEdgeContainer(source).addOutgoingEdge(e);
 			getEdgeContainer(target).addIncomingEdge(e);
@@ -84,7 +84,7 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 				
 				DirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
 				for (Edge e in ec.outgoingEdges) {
-					if (getEdgeTarget(e).equals(targetVertex)) {
+					if (edgeTarget(e).equals(targetVertex)) {
 						edges.add(e);
 					}
 				}
@@ -100,7 +100,7 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 					&& containsVertex(targetVertex)) {
 				DirectedEdgeContainer<Vertex, Edge> ec = getEdgeContainer(sourceVertex);
 				for (Edge e in ec.outgoingEdges) {
-					if (getEdgeTarget(e).equals(targetVertex)) {
+					if (edgeTarget(e).equals(targetVertex)) {
 						return e;
 					}
 				}
@@ -121,8 +121,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		shared actual Set<Edge> outgoingEdgesOf(Vertex v) => getEdgeContainer(v).outgoingEdges;
 		
 		shared actual void removeEdgeFromTouchingVertices(Edge e) {
-			Vertex source = getEdgeSource(e);
-			Vertex target = getEdgeTarget(e);
+			Vertex source = edgeSource(e);
+			Vertex target = edgeTarget(e);
 			
 			getEdgeContainer(source).removeOutgoingEdge(e);
 			getEdgeContainer(target).removeIncomingEdge(e);

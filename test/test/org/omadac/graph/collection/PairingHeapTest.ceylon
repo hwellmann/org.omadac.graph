@@ -10,8 +10,6 @@ import org.omadac.graph.collection {
 	PairingHeap
 }
 
-import java.util { Random }
-
 class PairingHeapTest() {
 	
 	shared test void createHeap() {
@@ -65,15 +63,13 @@ class PairingHeapTest() {
 	
 	shared test void insertRandomEntries() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
-		Integer numEntries = 20;
-		Random random = Random(42);
-		for (Integer i in 1..numEntries) {
-			Integer key = random.nextInt(1000);
+		Integer[] keys = [21, 54, 28, 38, 23, 342, 43, 32, 43, 29, 99];
+		for (Integer key in keys) {
 			heap.insert(key, key.string);
 			print(key);
 		}
 		assertFalse(heap.empty);
-		assertEquals(heap.size, numEntries);
+		assertEquals(heap.size, keys.size);
 		
 		variable Integer key = -1;
 		while (! heap.empty) {
@@ -85,19 +81,15 @@ class PairingHeapTest() {
 	
 	shared test void iterate() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
-		Integer numEntries = 5;
-		Random random = Random(43);
-		for (i in 1..numEntries) {
-			Integer key = random.nextInt(1000);
+		Integer[] keys = [43, 32, 43, 29, 99];
+		for (key in keys) {
 			heap.insert(key, key.string);
 			print(key);
 		}
 		assertFalse(heap.empty);
-		assertEquals(heap.size, numEntries);
-		
-		for (entry in heap) {
-			print(entry);
-		}		
+		assertEquals(heap.size, keys.size);
+
+		heap.collect(print);
 	}
 }
 

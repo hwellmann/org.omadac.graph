@@ -30,8 +30,8 @@ class SimpleDirectedGraphTest() {
 		g.addVertex(20);
 		value e = g.createEdge(10, 20);
 		if (exists edge = e) {
-			assertEquals(10, g.getEdgeSource(edge));
-			assertEquals(20, g.getEdgeTarget(edge));
+			assertEquals(10, g.edgeSource(edge));
+			assertEquals(20, g.edgeTarget(edge));
 		}
 		else {
 			assertFalse(true);
@@ -42,8 +42,8 @@ class SimpleDirectedGraphTest() {
 		g.addVertex(10);
 		g.addVertex(20);
 		g.createEdge(10, 20);
-		assertNotNull(g.getEdge(10, 20));
-		assertNull(g.getEdge(20, 10));
+		assertNotNull(g.edge(10, 20));
+		assertNull(g.edge(20, 10));
 	}
 	
 	
@@ -54,7 +54,7 @@ class SimpleDirectedGraphTest() {
 		g.removeVertex(10);
 		assertFalse(g.containsVertex(10));
 		assertTrue(g.containsVertex(20));
-		assertNull(g.getEdge(10, 20));
+		assertNull(g.edge(10, 20));
 		assertTrue(g.edgeSet.empty);		 
 	}
 	

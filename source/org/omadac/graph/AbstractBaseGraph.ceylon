@@ -12,11 +12,11 @@ shared Boolean allowingMultipleEdges = false,
 
     shared EdgeSetFactory<Vertex, Edge> edgeSetFactory = DefaultEdgeSetFactory<Vertex, Edge>();
     
-    shared formal Specifics<Vertex, Edge> createSpecifics();
-        
     MutableMap<Edge, IntrusiveEdge<Vertex>> edgeMap = HashMap<Edge, IntrusiveEdge<Vertex>>();
         
     variable Specifics<Vertex, Edge>? specifics_ = null;
+        
+    shared formal Specifics<Vertex, Edge> createSpecifics();
         
     shared Specifics<Vertex, Edge> specifics {
         if (exists s = specifics_) {
@@ -27,11 +27,11 @@ shared Boolean allowingMultipleEdges = false,
         return s;
     }
     
-    shared actual Set<Edge> getAllEdges(Vertex source, Vertex target) {
+    shared actual Set<Edge> allEdges(Vertex source, Vertex target) {
         return specifics.getAllEdges(source, target);
     }
     
-    shared actual Edge? getEdge(Vertex source, Vertex target) {
+    shared actual Edge? edge(Vertex source, Vertex target) {
         return specifics.getEdge(source, target);
     }
     
@@ -97,14 +97,14 @@ shared Boolean allowingMultipleEdges = false,
         }
     }
     
-    shared actual Vertex getEdgeSource(Edge edge) {
+    shared actual Vertex edgeSource(Edge edge) {
         if (is IntrusiveEdge<Vertex> edge) {
             return edge.source;
         }
         throw AssertionException("unchecked cast");
     }
     
-    shared actual Vertex getEdgeTarget(Edge edge) {
+    shared actual Vertex edgeTarget(Edge edge) {
         if (is IntrusiveEdge<Vertex> edge) {
             return edge.target;
         }
@@ -126,7 +126,7 @@ shared Boolean allowingMultipleEdges = false,
         return specifics.edgesOf(v);
     }
     
-    shared actual Float getEdgeWeight(Edge e) {
+    shared actual Float edgeWeight(Edge e) {
         return 1.0;
     }
     
@@ -142,7 +142,7 @@ shared Boolean allowingMultipleEdges = false,
     }
     
     shared actual Edge? removeIncidentEdge(Vertex sourceVertex, Vertex targetVertex) {
-        Edge? e = getEdge(sourceVertex, targetVertex);
+        Edge? e = edge(sourceVertex, targetVertex);
         if (exists e) {
             specifics.removeEdgeFromTouchingVertices(e);
             edgeMap.remove(e);

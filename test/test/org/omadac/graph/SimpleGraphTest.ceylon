@@ -40,8 +40,8 @@ class SimpleGraphTest() {
 		g.addVertex(20);
 		value e = g.createEdge(10, 20);
 		if (exists edge = e) {
-			assertEquals(10, g.getEdgeSource(edge));
-			assertEquals(20, g.getEdgeTarget(edge));
+			assertEquals(10, g.edgeSource(edge));
+			assertEquals(20, g.edgeTarget(edge));
 		}
 		else {
 			assertFalse(true);
@@ -52,7 +52,7 @@ class SimpleGraphTest() {
 		g.addVertex(10);
 		g.addVertex(20);
 		value e1 = g.createEdge(10, 20);
-		value e2 = g.getEdge(20, 10);
+		value e2 = g.edge(20, 10);
 		if (exists edge1 = e2, exists edge2 = e2) {
 			assertEquals(e2, e1);
 		}
@@ -69,7 +69,7 @@ class SimpleGraphTest() {
 		g.removeVertex(10);
 		assertFalse(g.containsVertex(10));
 		assertTrue(g.containsVertex(20));
-		assertNull(g.getEdge(10, 20));
+		assertNull(g.edge(10, 20));
 		assertTrue(g.edgeSet.empty);		 
 	}
 	
