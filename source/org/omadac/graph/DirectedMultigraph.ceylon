@@ -7,19 +7,19 @@ import org.omadac.graph.impl {
 	Specifics
 }
 
-shared class SimpleDirectedGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
-		extends AbstractDirectedGraph<Vertex, Edge>(edgeFactory)
+shared class DirectedMultigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
+		extends AbstractDirectedGraph<Vertex, Edge>(edgeFactory, true)
 		satisfies DirectedGraph<Vertex, Edge>
 		given Vertex satisfies Object
 		given Edge satisfies Object	{
 
 
 	
-	shared class SimpleDirectedSpecifics() extends DirectedSpecifics(false) {
+	shared class DirectedMultigraphSpecifics() extends DirectedSpecifics(false) {
 		
 		
 		shared actual Set<Edge> edgesOf(Vertex v) {
-			MutableSet<Edge> inAndOut = HashSet<Edge>(edgeContainer(v).incomingEdges);
+			MutableSet<Edge> inAndOut = HashSet(edgeContainer(v).incomingEdges);
 			inAndOut.addAll(edgeContainer(v).outgoingEdges);
 			
 			// we have two copies for each self-loop - remove one of them.
@@ -43,5 +43,5 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex
 		
 	}
 	
-	shared actual Specifics<Vertex,Edge> createSpecifics() => SimpleDirectedSpecifics();
+	shared actual Specifics<Vertex,Edge> createSpecifics() => DirectedMultigraphSpecifics();
 }

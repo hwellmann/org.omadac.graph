@@ -1,3 +1,4 @@
+import org.omadac.graph { Graph }
 "In a directed graph, each edge can only be traversed from its source vertex to its
  target vertex. An edge s to t and an edge from t to s are two distinct edges.
  
