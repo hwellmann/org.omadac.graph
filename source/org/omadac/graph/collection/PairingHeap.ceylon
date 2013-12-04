@@ -126,13 +126,13 @@ shared class PairingHeap<Key, Item>()
 			entry.smallest = true;
 			
 			if (entry == m) {
-				removeMinimum();
+				removeFirst();
 				return;
 			}
 			
 			entry.smallest = true;
 			relink(entry);
-			removeMinimum();
+			removeFirst();
 			entry.smallest = false;			
 		}
 	}
@@ -146,7 +146,7 @@ shared class PairingHeap<Key, Item>()
 	
 	shared actual Iterator<HEntry> iterator() => EntryIterator();
 	
-	shared actual HEntry removeMinimum() {
+	shared actual HEntry removeFirst() {
 		assert (exists oldMin = min);
 		if (size == 1) {
 			min = null;
@@ -170,10 +170,6 @@ shared class PairingHeap<Key, Item>()
 	
 	shared actual void union(Heap<Key,Item> that) {
 		
-	}
-	
-	shared actual HEntry? minimum  {
-		return min;
 	}
 	
 	Node join(Node first, Node? _second) {

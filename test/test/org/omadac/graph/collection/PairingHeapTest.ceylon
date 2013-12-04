@@ -18,7 +18,7 @@ class PairingHeapTest() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
 		assertTrue(heap.empty);
 		assertEquals(heap.size, 0);
-		assertNull(heap.minimum);
+		assertNull(heap.first);
 	}
 
 	shared test void insertOneEntry() {
@@ -26,8 +26,8 @@ class PairingHeapTest() {
 		heap.insert(10, "one");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 1);
-		assertEquals(heap.minimum?.key, 10);
-		assertEquals(heap.minimum?.item, "one");
+		assertEquals(heap.first?.key, 10);
+		assertEquals(heap.first?.item, "one");
 	}
 	
 	shared test void insertTwoEntriesAscending() {
@@ -36,14 +36,14 @@ class PairingHeapTest() {
 		heap.insert(20, "two");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 2);
-		assertEquals(heap.minimum?.key, 10);
-		assertEquals(heap.minimum?.item, "one");
+		assertEquals(heap.first?.key, 10);
+		assertEquals(heap.first?.item, "one");
 		
-		value min = heap.removeMinimum();
+		value min = heap.removeFirst();
 		assertEquals(min.key, 10);
 		assertEquals(min.item, "one");
-		assertEquals(heap.minimum?.key, 20);
-		assertEquals(heap.minimum?.item, "two");
+		assertEquals(heap.first?.key, 20);
+		assertEquals(heap.first?.item, "two");
 	}
 
 	shared test void insertTwoEntriesDescending() {
@@ -52,14 +52,14 @@ class PairingHeapTest() {
 		heap.insert(10, "one");
 		assertFalse(heap.empty);
 		assertEquals(heap.size, 2);
-		assertEquals(heap.minimum?.key, 10);
-		assertEquals(heap.minimum?.item, "one");
+		assertEquals(heap.first?.key, 10);
+		assertEquals(heap.first?.item, "one");
 		
-		value min = heap.removeMinimum();
+		value min = heap.removeFirst();
 		assertEquals(min.key, 10);
 		assertEquals(min.item, "one");
-		assertEquals(heap.minimum?.key, 20);
-		assertEquals(heap.minimum?.item, "two");
+		assertEquals(heap.first?.key, 20);
+		assertEquals(heap.first?.item, "two");
 	}
 	
 	
@@ -77,7 +77,7 @@ class PairingHeapTest() {
 		
 		variable Integer key = -1;
 		while (! heap.empty) {
-			value min = heap.removeMinimum();
+			value min = heap.removeFirst();
 			assertTrue(min.key >= key);
 			key = min.key;
 		}
