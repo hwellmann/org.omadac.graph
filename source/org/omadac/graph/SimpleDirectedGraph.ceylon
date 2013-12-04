@@ -88,7 +88,7 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 						edges.add(e);
 					}
 				}
-				return edges;
+				return LazySet(edges);
 			}
 			else {
 				return emptySet;
@@ -108,9 +108,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 			return null;
 		}
 		
-		// FIXME
 		shared actual Set<Vertex> vertexSet {
-			return vertexMapDirected.keys;
+			return LazySet(vertexMapDirected.keys);
 		}
 		
 		shared actual Integer inDegreeOf(Vertex v) => getEdgeContainer(v).incomingEdges.size;

@@ -96,7 +96,7 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 						edges.add(e);
 					}
 				}
-				return edges;
+				return LazySet(edges);
 			}
 			else {
 				return emptySet;
@@ -118,9 +118,8 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 			return null;
 		}
 		
-		// FIXME
 		shared actual Set<Vertex> vertexSet {
-			return vertexMapDirected.keys;
+			return LazySet(vertexMapDirected.keys);
 		}
 		
 		shared actual Integer inDegreeOf(Vertex v) {

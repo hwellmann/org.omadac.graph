@@ -119,7 +119,7 @@ shared Boolean allowingMultipleEdges = false,
         return specifics.vertexSet.contains(v);
     }
     
-    shared actual Set<Edge> edgeSet => edgeMap.keys;
+    shared actual Set<Edge> edgeSet => LazySet(edgeMap.keys);
     
     
     shared actual Set<Edge> edgesOf(Vertex v) {
