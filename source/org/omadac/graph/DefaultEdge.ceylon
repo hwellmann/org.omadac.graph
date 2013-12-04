@@ -1,6 +1,6 @@
-import org.omadac.graph.impl { IntrusiveEdge }
+import org.omadac.graph.impl { MutableEdge }
 shared class DefaultEdge<Vertex>(Vertex source, Vertex target)
-    extends IntrusiveEdge<Vertex>(source, target)
+    extends MutableEdge<Vertex>(source, target)
 	given Vertex satisfies Object {
 	
 	shared actual String string => "(``source``:``target``)"; 

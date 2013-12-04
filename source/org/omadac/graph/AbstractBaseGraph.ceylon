@@ -1,7 +1,7 @@
 import ceylon.collection { HashMap,  MutableMap }
-import org.omadac.graph.impl { Specifics, IntrusiveEdge }
+import org.omadac.graph.impl { Specifics, MutableEdge }
 
-shared abstract class AbstractBaseGraph<Vertex, Edge> (shared actual EdgeFactory<Vertex, Edge> edgeFactory, 
+shared abstract class AbstractBaseGraph<Vertex, Edge> (Edge factory(Vertex s, Vertex t), 
 shared Boolean allowingMultipleEdges = false, 
 	shared Boolean allowingLoops = false)
     	
@@ -12,12 +12,12 @@ shared Boolean allowingMultipleEdges = false,
 
     shared EdgeSetFactory<Vertex, Edge> edgeSetFactory = DefaultEdgeSetFactory<Vertex, Edge>();
     
-    MutableMap<Edge, IntrusiveEdge<Vertex>> edgeMap = HashMap<Edge, IntrusiveEdge<Vertex>>();
+    MutableMap<Edge, MutableEdge<Vertex>> edgeMap = HashMap<Edge, MutableEdge<Vertex>>();
         
     variable Specifics<Vertex, Edge>? specifics_ = null;
         
     shared formal Specifics<Vertex, Edge> createSpecifics();
-        
+    
     shared Specifics<Vertex, Edge> specifics {
         if (exists s = specifics_) {
             return s;
@@ -28,11 +28,11 @@ shared Boolean allowingMultipleEdges = false,
     }
     
     shared actual Set<Edge> allEdges(Vertex source, Vertex target) {
-        return specifics.getAllEdges(source, target);
+        return specifics.allEdges(source, target);
     }
     
     shared actual Edge? edge(Vertex source, Vertex target) {
-        return specifics.getEdge(source, target);
+        return specifics.edge(source, target);
     }
     
     shared actual Edge? createEdge(Vertex source, Vertex target) {
@@ -43,15 +43,15 @@ shared Boolean allowingMultipleEdges = false,
             return null;
         }
         
-        if (!allowingLoops && source.equals(target)) {
+        if (!allowingLoops && source == target) {
             throw AssertionException("loops not allowed");
         }
         
-        Edge edge = edgeFactory.createEdge(source, target);
+        Edge edge = factory(source, target);
         if (containsEdge(edge)) {
             return null;
         }
-        value intrusiveEdge = createIntrusiveEdge(edge, source, target);
+        value intrusiveEdge = createMutableEdge(edge, source, target);
         edgeMap.put(edge, intrusiveEdge);
         specifics.addEdgeToTouchingVertices(edge);
         return edge;
@@ -68,23 +68,23 @@ shared Boolean allowingMultipleEdges = false,
             return false;
         }
         
-        if (!allowingLoops && source.equals(target)) {
+        if (!allowingLoops && source == target) {
             throw AssertionException("loops not allowed");
         }
         
-        value intrusiveEdge = createIntrusiveEdge(edge, source, target);
-        edgeMap.put(edge, intrusiveEdge);
+        value mutableEdge = createMutableEdge(edge, source, target);
+        edgeMap.put(edge, mutableEdge);
         specifics.addEdgeToTouchingVertices(edge);
         return true;
     }
     
-    IntrusiveEdge<Vertex> createIntrusiveEdge(Edge e, Vertex source, Vertex target) {
-        if (is IntrusiveEdge<Vertex> e) {
+    MutableEdge<Vertex> createMutableEdge(Edge e, Vertex source, Vertex target) {
+        if (is MutableEdge<Vertex> e) {
             e.source = source;
             e.target = target;
             return e;
         }        
-        return IntrusiveEdge(source, target);
+        return MutableEdge(source, target);
     }
     
     shared actual Boolean addVertex(Vertex vertex) {
@@ -98,17 +98,13 @@ shared Boolean allowingMultipleEdges = false,
     }
     
     shared actual Vertex edgeSource(Edge edge) {
-        if (is IntrusiveEdge<Vertex> edge) {
-            return edge.source;
-        }
-        throw AssertionException("unchecked cast");
+        assert (is MutableEdge<Vertex> e = edge);
+        return e.source;
     }
     
     shared actual Vertex edgeTarget(Edge edge) {
-        if (is IntrusiveEdge<Vertex> edge) {
-            return edge.target;
-        }
-        throw AssertionException("unchecked cast");
+        assert (is MutableEdge<Vertex> e = edge);
+        return e.target;
     }
     
     shared actual Boolean containsEdge(Edge e) {
@@ -162,7 +158,4 @@ shared Boolean allowingMultipleEdges = false,
     }
     
     shared actual Set<Vertex> vertexSet => specifics.vertexSet;
-    
-    
-    
 }

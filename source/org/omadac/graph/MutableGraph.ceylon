@@ -5,9 +5,6 @@ shared interface MutableGraph<Vertex, Edge>
 	given Vertex satisfies Object
 	given Edge satisfies Object {
 	
-	"Factory for new edges."
-	shared formal EdgeFactory<Vertex, Edge> edgeFactory;
-	
 	"Creates an edge with the given source and target vertices, if no such edge
 	 exists or if the graph admits multiple edges."
 	shared formal Edge? createEdge(Vertex sourceVertex, Vertex targetVertex);

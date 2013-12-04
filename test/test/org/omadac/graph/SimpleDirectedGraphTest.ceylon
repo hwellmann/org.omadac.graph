@@ -1,5 +1,16 @@
-import ceylon.test { test, assertTrue, assertEquals, assertFalse, assertNull, assertNotNull }
-import org.omadac.graph { DefaultEdge, SimpleDirectedGraph }
+import ceylon.test {
+	test,
+	assertTrue,
+	assertEquals,
+	assertFalse,
+	assertNull,
+	assertNotNull
+}
+
+import org.omadac.graph {
+	DefaultEdge,
+	SimpleDirectedGraph
+}
 
 
 class SimpleDirectedGraphTest() {

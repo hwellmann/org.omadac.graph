@@ -1,9 +1,8 @@
-import ceylon.language.meta.model { Class, IncompatibleTypeException }
 import ceylon.collection { MutableSet, HashMap, HashSet, MutableMap }
 import org.omadac.graph.impl { Specifics, DirectedEdgeContainer }
 
-shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, EdgeFactory<Vertex, Edge> ef = DefaultEdgeFactory<Vertex, Edge>(klass), Boolean allowingLoops = false)
-		extends AbstractBaseGraph<Vertex, Edge>(ef)
+shared class SimpleDirectedGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t), Boolean allowingLoops = false)
+		extends AbstractBaseGraph<Vertex, Edge>(edgeFactory)
 		satisfies DirectedGraph<Vertex, Edge>
 		given Vertex satisfies Object
 		given Edge satisfies Object	{
@@ -16,7 +15,7 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		
 		MutableMap<Vertex, DirectedEdgeContainer<Vertex, Edge>> vertexMapDirected = HashMap<Vertex, DirectedEdgeContainer<Vertex, Edge>>();
 		
-		DirectedEdgeContainer<Vertex, Edge> getEdgeContainer(Vertex vertex) {
+		DirectedEdgeContainer<Vertex, Edge> edgeContainer(Vertex vertex) {
 			assertVertexExists(vertex);
 			
 			DirectedEdgeContainer<Vertex, Edge>? ec = vertexMapDirected.get(vertex);
@@ -36,8 +35,8 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 			Vertex source = edgeSource(e);
 			Vertex target = edgeTarget(e);
 			
-			getEdgeContainer(source).addOutgoingEdge(e);
-			getEdgeContainer(target).addIncomingEdge(e);
+			edgeContainer(source).addOutgoingEdge(e);
+			edgeContainer(target).addIncomingEdge(e);
 		}
 		
 		shared actual void addVertex(Vertex v) {
@@ -49,12 +48,12 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 		}
 		
 		shared actual Integer degreeOf(Vertex v) {
-			throw IncompatibleTypeException("");
+			throw AssertionException("");
 		}
 		
 		shared actual Set<Edge> edgesOf(Vertex v) {
-			MutableSet<Edge> inAndOut = HashSet<Edge>(getEdgeContainer(v).incomingEdges);
-			inAndOut.addAll(getEdgeContainer(v).outgoingEdges);
+			MutableSet<Edge> inAndOut = HashSet<Edge>(edgeContainer(v).incomingEdges);
+			inAndOut.addAll(edgeContainer(v).outgoingEdges);
 			
 			// we have two copies for each self-loop - remove one of them.
 			if (allowingLoops) {
@@ -75,19 +74,20 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 			return inAndOut;
 		}
 		
-		shared actual Set<Edge> getAllEdges(Vertex sourceVertex, Vertex targetVertex) {
+		shared actual Set<Edge> allEdges(Vertex sourceVertex, Vertex targetVertex) {
 			
 			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
-				return LazySet(getEdgeContainer(sourceVertex).outgoingEdges.select((Edge e) => edgeTarget(e).equals(targetVertex)));
+				value edges = edgeContainer(sourceVertex).outgoingEdges;
+				return LazySet(edges.select((Edge e) => edgeTarget(e) == targetVertex));
 			}
 			else {
 				return emptySet;
 			}
 		}
 		
-		shared actual Edge? getEdge(Vertex sourceVertex, Vertex targetVertex) {
+		shared actual Edge? edge(Vertex sourceVertex, Vertex targetVertex) {
 			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
-				return getEdgeContainer(sourceVertex).outgoingEdges.find((Edge e) => edgeTarget(e).equals(targetVertex));
+				return edgeContainer(sourceVertex).outgoingEdges.find((Edge e) => edgeTarget(e) == targetVertex);
 			}
 			return null;
 		}
@@ -96,20 +96,20 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 			return LazySet(vertexMapDirected.keys);
 		}
 		
-		shared actual Integer inDegreeOf(Vertex v) => getEdgeContainer(v).incomingEdges.size;
+		shared actual Integer inDegreeOf(Vertex v) => edgeContainer(v).incomingEdges.size;
 		
-		shared actual Set<Edge> incomingEdgesOf(Vertex v) => getEdgeContainer(v).incomingEdges;
+		shared actual Set<Edge> incomingEdgesOf(Vertex v) => edgeContainer(v).incomingEdges;
 		
-		shared actual Integer outDegreeOf(Vertex v) => getEdgeContainer(v).outgoingEdges.size;
+		shared actual Integer outDegreeOf(Vertex v) => edgeContainer(v).outgoingEdges.size;
 		
-		shared actual Set<Edge> outgoingEdgesOf(Vertex v) => getEdgeContainer(v).outgoingEdges;
+		shared actual Set<Edge> outgoingEdgesOf(Vertex v) => edgeContainer(v).outgoingEdges;
 		
 		shared actual void removeEdgeFromTouchingVertices(Edge e) {
 			Vertex source = edgeSource(e);
 			Vertex target = edgeTarget(e);
 			
-			getEdgeContainer(source).removeOutgoingEdge(e);
-			getEdgeContainer(target).removeIncomingEdge(e);
+			edgeContainer(source).removeOutgoingEdge(e);
+			edgeContainer(target).removeIncomingEdge(e);
 		}
 	}
 	
@@ -122,8 +122,4 @@ shared class SimpleDirectedGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> kla
 	shared actual Set<Edge> outgoingEdgesOf(Vertex v) => specifics.outgoingEdgesOf(v);
 	
 	shared actual Specifics<Vertex,Edge> createSpecifics() => DirectedSpecifics(allowingLoops);
-
-	
-	
-	
 }

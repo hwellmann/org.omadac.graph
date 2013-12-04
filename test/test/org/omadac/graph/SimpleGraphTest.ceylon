@@ -13,7 +13,6 @@ import org.omadac.graph {
 
 
 class SimpleGraphTest() {
-	
 	SimpleGraph<Integer,DefaultEdge<Integer>> g = SimpleGraph(`DefaultEdge<Integer>`); 
 	
 	shared test void newGraphShouldHaveNoVertices() {

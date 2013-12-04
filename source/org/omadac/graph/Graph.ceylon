@@ -42,3 +42,4 @@ shared interface Graph<Vertex, Edge>
     "The weight of the given edge."
 	shared formal Float edgeWeight(Edge e);
 }
+

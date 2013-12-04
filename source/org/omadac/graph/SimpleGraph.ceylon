@@ -1,13 +1,18 @@
+import ceylon.collection {
+	HashMap,
+	MutableMap
+}
+
 import org.omadac.graph {
-	EdgeFactory,
 	AbstractBaseGraph
 }
-import ceylon.language.meta.model { Class, IncompatibleTypeException }
-import ceylon.collection { HashMap, MutableMap }
-import org.omadac.graph.impl { Specifics, UndirectedEdgeContainer }
+import org.omadac.graph.impl {
+	Specifics,
+	UndirectedEdgeContainer
+}
 
-shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, EdgeFactory<Vertex, Edge> ef = DefaultEdgeFactory<Vertex, Edge>(klass))
-		extends AbstractBaseGraph<Vertex, Edge>(ef)
+shared class SimpleGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
+		extends AbstractBaseGraph<Vertex, Edge>(edgeFactory)
 		satisfies UndirectedGraph<Vertex, Edge>
 		given Vertex satisfies Object
 		given Edge satisfies Object	{
@@ -22,7 +27,7 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 		
 		MutableMap<Vertex, UndirectedEdgeContainer<Vertex, Edge>> vertexMapDirected = HashMap<Vertex, UndirectedEdgeContainer<Vertex, Edge>>();
 		
-		UndirectedEdgeContainer<Vertex, Edge> getEdgeContainer(Vertex vertex) {
+		UndirectedEdgeContainer<Vertex, Edge> edgeContainer(Vertex vertex) {
 			assertVertexExists(vertex);
 			
 			UndirectedEdgeContainer<Vertex, Edge>? ec = vertexMapDirected.get(vertex);
@@ -42,10 +47,10 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 			Vertex source = edgeSource(e);
 			Vertex target = edgeTarget(e);
 			
-			getEdgeContainer(source).addEdge(e);
+			edgeContainer(source).addEdge(e);
 			
-			if (!source.equals(target)) {
-				getEdgeContainer(target).addEdge(e);
+			if (source != target) {
+				edgeContainer(target).addEdge(e);
 			}
 		}
 		
@@ -73,21 +78,21 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 				
 				return 0;
 			} else {
-				return getEdgeContainer(v).edgeCount;
+				return edgeContainer(v).edgeCount;
 			}
 		}
 		
 		shared actual Set<Edge> edgesOf(Vertex v) {
-			return getEdgeContainer(v).edges;
+			return edgeContainer(v).edges;
 		}
 		
-		Boolean joins(Edge e, Vertex sourceVertex, Vertex targetVertex) => sourceVertex.equals(edgeSource(e)) && targetVertex.equals(edgeTarget(e));
+		Boolean joins(Edge e, Vertex sourceVertex, Vertex targetVertex) => sourceVertex == edgeSource(e) && targetVertex == edgeTarget(e);
 		
-		shared actual Set<Edge> getAllEdges(Vertex sourceVertex, Vertex targetVertex) {
+		shared actual Set<Edge> allEdges(Vertex sourceVertex, Vertex targetVertex) {
 			
 			if (containsVertex(sourceVertex) && containsVertex(targetVertex))
 			{
-				value ec = getEdgeContainer(sourceVertex);
+				value ec = edgeContainer(sourceVertex);
 				return LazySet(ec.edges.select((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex))));
 			}
 			else {
@@ -95,9 +100,9 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 			}
 		}
 
-		shared actual Edge? getEdge(Vertex sourceVertex, Vertex targetVertex) {
+		shared actual Edge? edge(Vertex sourceVertex, Vertex targetVertex) {
 			if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
-				value ec = getEdgeContainer(sourceVertex);
+				value ec = edgeContainer(sourceVertex);
 				return ec.edges.find((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex)));
 			}
 			return null;
@@ -108,28 +113,28 @@ shared class SimpleGraph<Vertex, Edge>(Class<Edge, [Vertex, Vertex]> klass, Edge
 		}
 		
 		shared actual Integer inDegreeOf(Vertex v) {
-			throw IncompatibleTypeException("");
+			throw AssertionException("");
 		}
 		
 		shared actual Set<Edge> incomingEdgesOf(Vertex v) {
-			throw IncompatibleTypeException("");
+			throw AssertionException("");
 		}
 		
 		shared actual Integer outDegreeOf(Vertex v) {
-			throw IncompatibleTypeException("");
+			throw AssertionException("");
 		}
 		
 		shared actual Set<Edge> outgoingEdgesOf(Vertex v) {
-			throw IncompatibleTypeException("");
+			throw AssertionException("");
 		}
 		
 		shared actual void removeEdgeFromTouchingVertices(Edge e) {
 			Vertex source = edgeSource(e);
 			Vertex target = edgeTarget(e);
 			
-			getEdgeContainer(source).removeEdge(e);
-			if (!source.equals(target)) {
-				getEdgeContainer(target).removeEdge(e);
+			edgeContainer(source).removeEdge(e);
+			if (source !=target) {
+				edgeContainer(target).removeEdge(e);
 			}
 		}
 	}

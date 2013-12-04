@@ -8,13 +8,7 @@ shared abstract class AbstractGraph<Vertex, Edge>()
     }
     
     shared actual Boolean removeAllEdges({Edge*} edges) {
-        variable Boolean modified = false;
-
-        for (Edge e in edges) {
-            modified ||= removeEdge(e);
-        }
-
-        return modified;
+        return any(edges.collect((Edge e) => removeEdge(e)));
     }
 
     shared actual Set<Edge> removeIncidentEdges(Vertex sourceVertex, Vertex targetVertex) {
@@ -26,17 +20,8 @@ shared abstract class AbstractGraph<Vertex, Edge>()
         return removed;
     }
 
-    /**
-     * @see Graph#removeAllVertices(Collection)
-     */
     shared actual Boolean removeAllVertices({Vertex*} vertices) {
-        variable Boolean modified = false;
-
-        for (Vertex v in vertices) {
-            modified ||= removeVertex(v);
-        }
-
-        return modified;
+        return any(vertices.collect((Vertex v) => removeVertex(v)));
     }
     
     shared actual String string {
@@ -79,7 +64,7 @@ shared abstract class AbstractGraph<Vertex, Edge>()
 
     shared actual Integer hash  {
         variable Integer hash = vertexSet.hash;
-        for (Edge e in edgeSet) {
+        for (e in edgeSet) {
             variable Integer part = e.hash;
             Integer source = edgeSource(e).hash;
             Integer target = edgeTarget(e).hash;
@@ -94,11 +79,11 @@ shared abstract class AbstractGraph<Vertex, Edge>()
     }
 
     shared actual Boolean equals(Object that) {
-        if (this == that) {
+        if (is AbstractGraph<Vertex, Edge> that, this === that) {
             return true;
         }
         if (is AbstractGraph<Vertex, Edge> that) {
-            if (! vertexSet.equals(that.vertexSet)) {
+            if (vertexSet != that.vertexSet) {
                 return false;
             }
             
@@ -106,15 +91,15 @@ shared abstract class AbstractGraph<Vertex, Edge>()
                 return false;
             }
             
-            for (Edge e in edgeSet) {
+            for (e in edgeSet) {
                 if (! that.containsEdge(e)) {
                     return false;
                 }
                 Vertex source = edgeSource(e);
                 Vertex target = edgeTarget(e);
                 
-                if (!that.edgeSource(e).equals(source) 
-            	    || !that.edgeSource(e).equals(target)) {
+                if (that.edgeSource(e) != source 
+            	    || that.edgeSource(e) != target) {
                     return false;
                 }
                 Float diff = edgeWeight(e) - that.edgeWeight(e);
