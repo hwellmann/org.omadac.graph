@@ -5,7 +5,7 @@ import ceylon.language.meta {type}
  in practice the performance of other implementations (e.g. Fibonacci heap) which should be
  superior in theory according to complexity analysis.
 
- [1]: (http://en.wikipedia.org/wiki/Pairing_heap)"
+ [1]: http://en.wikipedia.org/wiki/Pairing_heap"
  
 by("Harald Wellmann")
 shared class PairingHeap<Key, Item>()
@@ -16,11 +16,11 @@ shared class PairingHeap<Key, Item>()
 	alias Node => PairingHeapNode;
 
 	variable Integer numItems = 0;
-	shared variable Integer modCount = 0;
+	variable Integer _modCount = 0;
 	
 	variable Node? min = null;
 	
-	"A tree node representing a heap entry. Eeach node has at most one parent and any number of children.
+	"A tree node representing a heap entry. Each node has at most one parent and any number of children.
 	 The siblings of a node are represented as a double linked list by means of the previous and next members.
 	 The [[previous]] member has a dual function: for the first sibling, it points to the parent node.
 	 
@@ -35,7 +35,6 @@ shared class PairingHeap<Key, Item>()
 		shared variable Node? next = null; 
 		shared variable Node? previous = null;
 		shared variable Boolean smallest = false;
-		shared variable PairingHeap<Key, Item> owner = outer;
 		
 		shared Comparison compare(PairingHeapNode other) {
 			if (smallest && other.smallest) {
@@ -53,7 +52,7 @@ shared class PairingHeap<Key, Item>()
 			return key.compare(other.key);
 		}
 		
-		shared Boolean ownedBy(PairingHeap<Key, Item> heap) => heap === owner;
+		shared Boolean ownedBy(PairingHeap<Key, Item> heap) => heap === outer;
 		
 	}
 	
@@ -101,6 +100,7 @@ shared class PairingHeap<Key, Item>()
 	
 	
 	shared actual Integer size => numItems;
+	shared Integer modCount => _modCount;
 	
 	shared actual HEntry insert(Key k, Item item) {
 		Node node = PairingHeapNode(k, item);
@@ -114,7 +114,7 @@ shared class PairingHeap<Key, Item>()
 			}
 		}
 		numItems++;
-		modCount++;
+		_modCount++;
 		return node;
 	}
 	
@@ -123,7 +123,7 @@ shared class PairingHeap<Key, Item>()
 	shared actual void clear() {
 		min = null;
 		numItems = 0;
-		modCount++;
+		_modCount++;
 	}
 	
 	shared actual void decreaseKey(HEntry entry, Key k) {
@@ -133,14 +133,12 @@ shared class PairingHeap<Key, Item>()
 			assert (! entry.key < k);
 			entry.key = k;
 			relink(entry);
-			modCount++;
+			_modCount++;
 		}
 	}
 	
 	shared actual void delete(HEntry entry) {
 		if (is Node entry, exists m=min) {
-			entry.smallest = true;
-			
 			if (entry == m) {
 				removeFirst();
 				return;
@@ -176,7 +174,7 @@ shared class PairingHeap<Key, Item>()
 			}
 		}
 		numItems--;
-		modCount++;
+		_modCount++;
 		
 		oldMin.child = null;
 		oldMin.next = null;
@@ -185,35 +183,36 @@ shared class PairingHeap<Key, Item>()
 	}
 	
 	shared actual void union(Heap<Key,Item> that) {
-		assert (is PairingHeap<Key, Item> that);
+		// both heaps must have the same type 
 		assert (type(that).exactly(`PairingHeap<Key,Item>`));
 		
+		// redundant, but the compiler can't derive this automatically
+		assert (is PairingHeap<Key, Item> that);
+		
 		if (exists m=min) {
-			this.min = join(m, that.min);
+			min = join(m, that.min);
 		}
 		else {
-			this.min = that.min;
+			min = that.min;
 		}
 		
 		numItems += that.numItems;
-		modCount++;
+		_modCount++;
 		that.clear();
 	}
 	
-	Node join(Node first, Node? _second) {
-		if (exists second = _second) {
+	Node join(Node first, Node? second) {
+		if (exists second) {
 			if (first.compare(second) != smaller) {
 				// Make first the child of second.
 				second.previous = first.previous;
 				first.previous = second;
 				first.next = second.child;
-				if (exists fn = first.next)
-				{
+				if (exists fn = first.next) {
 					fn.previous = first;
 				}
 				second.child = first;
-				if (exists sp = second.previous)
-				{
+				if (exists sp = second.previous) {
 					sp.next = second;
 				}
 				return second;				
@@ -222,14 +221,12 @@ shared class PairingHeap<Key, Item>()
 				// Make second the child of first.
 				second.previous = first;
 				first.next = second.next;
-				if (exists fn = first.next)
-				{
+				if (exists fn = first.next) {
 					fn.previous = first;
 				}
 				
 				second.next = first.child;
-				if (exists sn = second.next)
-				{
+				if (exists sn = second.next) {
 					sn.previous = second;
 				}
 				
@@ -259,11 +256,7 @@ shared class PairingHeap<Key, Item>()
 			entry.previous = null;
 			
 			min = join(entry, min);
-			min?.previous = null;
-			min?.next = null;
-			
-		}
-		
+		}		
 	}
 	
 	Node merge(Node other) {
@@ -311,6 +304,5 @@ shared class PairingHeap<Key, Item>()
 		value copy = PairingHeap<Key, Item>();
 		copy.insertAll(this);
 		return copy;		
-	}
-	
+	}	
 }
