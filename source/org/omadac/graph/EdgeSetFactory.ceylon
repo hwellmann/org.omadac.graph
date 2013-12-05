@@ -5,3 +5,4 @@ shared interface EdgeSetFactory<Vertex, Edge>
 
 	shared formal MutableSet<Edge> createEdgeSet(Vertex v);
 }
+	

@@ -3,19 +3,19 @@ import org.omadac.graph.impl { Specifics, MutableEdge }
 
 shared abstract class AbstractBaseGraph<Vertex, Edge> (Edge factory(Vertex s, Vertex t), 
 shared Boolean allowingMultipleEdges = false, 
-	shared Boolean allowingLoops = false)
-    	
-		extends AbstractGraph<Vertex, Edge>()
-		given Vertex satisfies Object
-    	given Edge satisfies Object {
+shared Boolean allowingLoops = false)
 
-
+        extends AbstractGraph<Vertex, Edge>()
+        given Vertex satisfies Object
+        given Edge satisfies Object {
+    
+    
     shared EdgeSetFactory<Vertex, Edge> edgeSetFactory = DefaultEdgeSetFactory<Vertex, Edge>();
     
     MutableMap<Edge, MutableEdge<Vertex>> edgeMap = HashMap<Edge, MutableEdge<Vertex>>();
-        
+    
     variable Specifics<Vertex, Edge>? specifics_ = null;
-        
+    
     shared formal Specifics<Vertex, Edge> createSpecifics();
     
     shared Specifics<Vertex, Edge> specifics {

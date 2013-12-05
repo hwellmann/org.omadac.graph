@@ -18,3 +18,4 @@ shared class Pseudograph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 	
 	shared actual Specifics<Vertex,Edge> createSpecifics() => PseudographSpecifics();	
 }
+	

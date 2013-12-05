@@ -8,6 +8,5 @@ shared interface UndirectedGraph<Vertex, Edge>
 		given Edge satisfies Object {
 	
 	"The number of edges incident with the given vertex."
-	shared formal Integer degreeOf(Vertex vertex);
-	
+	shared formal Integer degreeOf(Vertex vertex);	
 }

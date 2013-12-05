@@ -17,3 +17,4 @@ shared class SimpleGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 	
 	shared actual Specifics<Vertex,Edge> createSpecifics() => SimpleGraphSpecifics(allowingLoops);
 }
+	

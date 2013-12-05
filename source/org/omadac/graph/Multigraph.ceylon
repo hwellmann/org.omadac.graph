@@ -16,3 +16,4 @@ shared class Multigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 	
 	shared actual Specifics<Vertex,Edge> createSpecifics() => MultigraphSpecifics();	
 }
+	
