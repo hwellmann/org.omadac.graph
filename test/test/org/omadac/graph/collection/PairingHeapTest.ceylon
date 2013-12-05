@@ -11,6 +11,7 @@ import org.omadac.graph.collection {
 }
 
 class PairingHeapTest() {
+	alias Entry => HeapEntry<Integer, String>;
 	
 	shared test void createHeap() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
@@ -85,7 +86,23 @@ class PairingHeapTest() {
 		assertFalse(heap.empty);
 		assertEquals(heap.size, keys.size);
 
-		assertEquals(heap.collect((HeapEntry<Integer, String> e) => e.key), [29, 99, 32, 43, 43]);
+		assertEquals(heap.collect((Entry e) => e.key), [29, 99, 32, 43, 43]);
+	}
+	
+	shared test void union() {
+		PairingHeap<Integer, String> heap1 = PairingHeap<Integer, String>();
+		heap1.insert(32, "32");
+		heap1.insert(18, "18");
+		PairingHeap<Integer, String> heap2 = PairingHeap<Integer, String>();
+		heap2.insert(29, "29");
+		heap2.insert(15, "25");
+		heap2.insert(77, "77");
+		heap1.union(heap2);
+		
+		assertTrue(heap2.empty);
+		assertEquals(heap1.size, 5);
+		
+		assertEquals(heap1.collect((Entry e) => heap1.removeFirst().key), [15, 18, 29, 32, 77]);
 	}
 }
 
