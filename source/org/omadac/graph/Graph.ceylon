@@ -41,5 +41,30 @@ shared interface Graph<Vertex, Edge>
 
     "The weight of the given edge."
 	shared formal Float edgeWeight(Edge e);
+    
+    "The opposite vertex of the given edge, when v is one of its vertices."
+    shared default Vertex oppositeVertex(Edge e, Vertex v) {        
+        Vertex source = edgeSource(e);
+        Vertex target = edgeTarget(e);
+        if (v == source) {
+            return target;
+        } else if (v == target) {
+            return source;
+        }
+        
+        "no such vertex"
+        assert(false);
+    }
+    
+    "Is the given edge incident with the given vertex? "
+    shared default Boolean incident(Edge e, Vertex v) {
+        return edgeSource(e) == v || edgeTarget(e) == v;
+    }
+
+    "Returns the neighbours of the given vertex. 
+     A neighbour may occur twice if the graph allows parallel edges."
+    shared {Vertex*} neighbours(Vertex v) {
+        return edgesOf(v).map((Edge e) => oppositeVertex(e, v));
+    }
 }
 

@@ -21,4 +21,16 @@ shared interface DirectedGraph<Vertex, Edge>
 
 	"Set of outgoing edges of the given vertex."
     shared formal Set<Edge> outgoingEdgesOf(Vertex vertex);
+	
+	"Successors of the given vertex. 
+	 A successor may occur multiple times if the graph allows parallel edges."
+	shared default {Vertex*} successors(Vertex vertex) {
+		return outgoingEdgesOf(vertex).map((Edge edge) => oppositeVertex(edge, vertex));
+	}
+
+	"Predecessors of the given vertex. 
+     A successor may occur multiple times if the graph allows parallel edges."
+	shared default {Vertex*} predecessors(Vertex vertex) {
+		return incomingEdgesOf(vertex).map((Edge edge) => oppositeVertex(edge, vertex));
+	}
 }

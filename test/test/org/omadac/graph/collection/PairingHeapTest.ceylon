@@ -7,7 +7,7 @@ import ceylon.test {
 }
 
 import org.omadac.graph.collection {
-	PairingHeap
+	PairingHeap, HeapEntry
 }
 
 class PairingHeapTest() {
@@ -66,7 +66,6 @@ class PairingHeapTest() {
 		Integer[] keys = [21, 54, 28, 38, 23, 342, 43, 32, 43, 29, 99];
 		for (Integer key in keys) {
 			heap.insert(key, key.string);
-			print(key);
 		}
 		assertFalse(heap.empty);
 		assertEquals(heap.size, keys.size);
@@ -81,15 +80,12 @@ class PairingHeapTest() {
 	
 	shared test void iterate() {
 		PairingHeap<Integer, String> heap = PairingHeap<Integer, String>();
-		Integer[] keys = [43, 32, 43, 29, 99];
-		for (key in keys) {
-			heap.insert(key, key.string);
-			print(key);
-		}
+		value keys = [43, 32, 43, 29, 99];
+		keys.collect((Integer key) => heap.insert(key, key.string));
 		assertFalse(heap.empty);
 		assertEquals(heap.size, keys.size);
 
-		heap.collect(print);
+		assertEquals(heap.collect((HeapEntry<Integer, String> e) => e.key), [29, 99, 32, 43, 43]);
 	}
 }
 
