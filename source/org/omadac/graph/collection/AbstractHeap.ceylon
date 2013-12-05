@@ -1,3 +1,5 @@
+"Abstract base class for [[Heap]] implementations."
+by("Harald Wellmann")
 shared abstract class AbstractHeap<Key, Item>()
 		satisfies Heap<Key, Item>
 		given Key satisfies Comparable<Key>
@@ -5,10 +7,9 @@ shared abstract class AbstractHeap<Key, Item>()
 	
 	shared alias HEntry => HeapEntry<Key,Item>;
 
-	shared actual void insertAll(Heap<Key, Item> that) {
+	shared actual void insertAll({HEntry*} that) {
 		for (HEntry entry in that)	{
 			insert(entry.key, entry.item);
 		}
-	}
-	
+	}	
 }

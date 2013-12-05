@@ -1,13 +1,19 @@
-shared class HeapEntry<Key, out Item>(key, item)
-		extends Object()
+"An entry to be stored in a [[Heap]], containing a key and an item.
+ 
+ Note: Heap implementations may require custom HeapEntry implementations
+ with additional members. For this reason we can't use ceylon.lang.Entry
+ which is a final class.
+ "
+by("Harald Wellmann")
+shared interface HeapEntry<out Key, out Item>
 		given Key satisfies Comparable<Key>
 		given Item satisfies Object {
 	
 	"The key used to access the entry."
-	shared variable Key key;
+	shared formal Key key;
 	
 	"The value associated with the key."
-	shared Item item;
+	shared formal Item item;
 	
 	"A pair (2 element tuple) with the key and
 	 item of this entry."

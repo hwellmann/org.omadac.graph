@@ -1,27 +1,43 @@
-import org.omadac.graph.collection { Heap  }
+import org.omadac.graph.collection { Heap }
+import ceylon.language.meta {type}
+
+"A [pairing heap][1] is one of the most efficient heap implementations, often exceeding
+ in practice the performance of other implementations (e.g. Fibonacci heap) which should be
+ superior in theory according to complexity analysis.
+
+ [1]: (http://en.wikipedia.org/wiki/Pairing_heap)"
+ 
+by("Harald Wellmann")
 shared class PairingHeap<Key, Item>()
 		extends AbstractHeap<Key, Item>()
 		given Key satisfies Comparable<Key>
 		given Item satisfies Object {
 	
-	alias Node => PairingHeapNode<Key,Item>;
+	alias Node => PairingHeapNode;
 
 	variable Integer numItems = 0;
-	variable Integer modCount = 0;
+	shared variable Integer modCount = 0;
 	
 	variable Node? min = null;
 	
-	class PairingHeapNode<Key, Item>(Key k, Item item) extends HeapEntry<Key, Item>(k, item)
-			satisfies Comparable<PairingHeapNode<Key,Item>> 
-			given Key satisfies Comparable<Key>
-			given Item satisfies Object {
+	"A tree node representing a heap entry. Eeach node has at most one parent and any number of children.
+	 The siblings of a node are represented as a double linked list by means of the previous and next members.
+	 The [[previous]] member has a dual function: for the first sibling, it points to the parent node.
+	 
+	 The [[smallest]] flag is used to implement the [[Heap.delete]] method in terms [[Heap.decreaseKey]]
+	 and [[Heap.removeFirst]]. When the [[smallest]] flag is set for a given node, it will compare
+	 as smallest to any other node.
+	 "	
+	class PairingHeapNode(shared actual variable Key key, shared actual Item item) extends Object()
+			satisfies HeapEntry<Key,Item>{
 		
 		shared variable Node? child = null; 
 		shared variable Node? next = null; 
 		shared variable Node? previous = null;
 		shared variable Boolean smallest = false;
+		shared variable PairingHeap<Key, Item> owner = outer;
 		
-		shared actual Comparison compare(PairingHeapNode<Key,Item> other) {
+		shared Comparison compare(PairingHeapNode other) {
 			if (smallest && other.smallest) {
 				return equal;
 			}
@@ -34,10 +50,10 @@ shared class PairingHeap<Key, Item>()
 				return larger;
 			}
 			
-			return k.compare(other.k);
+			return key.compare(other.key);
 		}
 		
-		shared Boolean ownedBy(PairingHeap<Key, Item> heap) => heap == outer;
+		shared Boolean ownedBy(PairingHeap<Key, Item> heap) => heap === owner;
 		
 	}
 	
@@ -169,7 +185,19 @@ shared class PairingHeap<Key, Item>()
 	}
 	
 	shared actual void union(Heap<Key,Item> that) {
+		assert (is PairingHeap<Key, Item> that);
+		assert (type(that).exactly(`PairingHeap<Key,Item>`));
 		
+		if (exists m=min) {
+			this.min = join(m, that.min);
+		}
+		else {
+			this.min = that.min;
+		}
+		
+		numItems += that.numItems;
+		modCount++;
+		that.clear();
 	}
 	
 	Node join(Node first, Node? _second) {
