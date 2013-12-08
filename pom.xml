@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.omadac.ceylon</groupId>
+    <artifactId>org.omadac.graph</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>car</packaging>
+
+    <properties>
+        <ceylon.home>/opt/ceylon-1.0.0</ceylon.home>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.omadac.ceylon</groupId>
+                <artifactId>ceylon-maven-plugin</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <source>source</source>
+                    <testSource>test</testSource>
+                    <modules>
+                        <module>org.omadac.graph</module>
+                    </modules>
+                    <testModules>
+                        <testModule>test.org.omadac.graph</testModule>
+                    </testModules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
