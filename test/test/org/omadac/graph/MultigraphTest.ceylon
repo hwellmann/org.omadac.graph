@@ -101,7 +101,7 @@ class MultigraphTest() {
 	shared test void shouldNotAllowLoops() {
 		g.addVertex(10);
 		assertThatException(() => g.createEdge(10, 10))
-				.hasType(`AssertionException`).hasMessage("loops not allowed");
+				.hasType(`AssertionError`).hasMessage("loops not allowed");
 	}
 	
 }

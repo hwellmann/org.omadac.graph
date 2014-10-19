@@ -1,15 +1,13 @@
 import ceylon.collection {
 	HashMap,
-	MutableMap
+	MutableMap,
+	HashSet
 }
 
 import org.omadac.graph {
 	AbstractBaseGraph
 }
-import org.omadac.graph.impl {
-	Specifics,
-	UndirectedEdgeContainer
-}
+
 
 shared abstract class AbstractUndirectedGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t), Boolean allowingMultipleEdges = false, Boolean allowingLoops = false)
 		extends AbstractBaseGraph<Vertex, Edge>(edgeFactory, allowingMultipleEdges, allowingLoops)
@@ -73,7 +71,8 @@ shared abstract class AbstractUndirectedGraph<Vertex, Edge>(Edge edgeFactory(Ver
 			if (containsVertex(sourceVertex) && containsVertex(targetVertex))
 			{
 				value ec = edgeContainer(sourceVertex);
-				return LazySet(ec.edges.select((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex))));
+				value edges = ec.edges.select((Edge e) => (joins(e, sourceVertex, targetVertex) || joins(e, targetVertex, sourceVertex)));
+				return HashSet{ elements =  edges; };
 			}
 			else {
 				return emptySet;
@@ -89,23 +88,23 @@ shared abstract class AbstractUndirectedGraph<Vertex, Edge>(Edge edgeFactory(Ver
 		}
 		
 		shared actual Set<Vertex> vertexSet {
-			return LazySet(vertexMapDirected.keys);
+			return HashSet{ elements = vertexMapDirected.keys; };
 		}
 		
 		shared actual Integer inDegreeOf(Vertex v) {
-			throw AssertionException("");
+			throw AssertionError("");
 		}
 		
 		shared actual Set<Edge> incomingEdgesOf(Vertex v) {
-			throw AssertionException("");
+			throw AssertionError("");
 		}
 		
 		shared actual Integer outDegreeOf(Vertex v) {
-			throw AssertionException("");
+			throw AssertionError("");
 		}
 		
 		shared actual Set<Edge> outgoingEdgesOf(Vertex v) {
-			throw AssertionException("");
+			throw AssertionError("");
 		}
 		
 		shared actual void removeEdgeFromTouchingVertices(Edge e) {

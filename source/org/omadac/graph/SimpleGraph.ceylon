@@ -1,6 +1,4 @@
-import org.omadac.graph.impl {
-	Specifics
-}
+
 
 shared class SimpleGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 		extends AbstractUndirectedGraph<Vertex, Edge>(edgeFactory)

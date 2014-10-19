@@ -1,12 +1,10 @@
 import ceylon.collection {
     HashMap,
-    MutableMap
+    MutableMap,
+	HashSet
 }
 
-import org.omadac.graph.impl {
-    Specifics,
-    DirectedEdgeContainer
-}
+
 
 shared abstract class AbstractDirectedGraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t), Boolean allowingMultipleEdges = false, Boolean allowingLoops = false)
         extends AbstractBaseGraph<Vertex, Edge>(edgeFactory, allowingMultipleEdges, allowingLoops)
@@ -55,14 +53,14 @@ shared abstract class AbstractDirectedGraph<Vertex, Edge>(Edge edgeFactory(Verte
         }
         
         shared actual Integer degreeOf(Vertex v) {
-            throw AssertionException("");
+            throw AssertionError("");
         }
         
         shared actual Set<Edge> allEdges(Vertex sourceVertex, Vertex targetVertex) {
             
             if (containsVertex(sourceVertex) && containsVertex(targetVertex)) {
                 value edges = edgeContainer(sourceVertex).outgoingEdges;
-                return LazySet(edges.select((Edge e) => edgeTarget(e) == targetVertex));
+                return HashSet{ elements = edges.select((Edge e) => edgeTarget(e) == targetVertex); };
             }
             else {
                 return emptySet;
@@ -77,7 +75,7 @@ shared abstract class AbstractDirectedGraph<Vertex, Edge>(Edge edgeFactory(Verte
         }
         
         shared actual Set<Vertex> vertexSet {
-            return LazySet(vertexMapDirected.keys);
+            return HashSet { elements = vertexMapDirected.keys; };
         }
         
         shared actual Integer inDegreeOf(Vertex v) => edgeContainer(v).incomingEdges.size;

@@ -1,6 +1,4 @@
-import org.omadac.graph.impl {
-	Specifics
-}
+
 import org.omadac.graph { UndirectedGraph, AbstractUndirectedGraph }
 
 shared class Multigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))

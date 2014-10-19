@@ -3,9 +3,7 @@ import ceylon.collection {
 	HashSet
 }
 
-import org.omadac.graph.impl {
-	Specifics
-}
+
 
 shared class DirectedMultigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 		extends AbstractDirectedGraph<Vertex, Edge>(edgeFactory, true)
@@ -19,7 +17,7 @@ shared class DirectedMultigraph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex 
 		
 		
 		shared actual Set<Edge> edgesOf(Vertex v) {
-			MutableSet<Edge> inAndOut = HashSet(edgeContainer(v).incomingEdges);
+			MutableSet<Edge> inAndOut = HashSet{elements = edgeContainer(v).incomingEdges; };
 			inAndOut.addAll(edgeContainer(v).outgoingEdges);
 			
 			// we have two copies for each self-loop - remove one of them.

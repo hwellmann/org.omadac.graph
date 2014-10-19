@@ -56,7 +56,7 @@ shared abstract class AbstractGraph<Vertex, Edge>()
 				sb.append("}");
 			}
 			renderedEdges.chain(sb.string);			
-			sb.reset();
+			//sb.reset();
 		}
 		return "(``vertexSet``, ``renderedEdges``)";
 	}

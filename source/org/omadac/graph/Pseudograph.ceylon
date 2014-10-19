@@ -1,6 +1,4 @@
-import org.omadac.graph.impl {
-	Specifics
-}
+
 
 shared class Pseudograph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 		extends AbstractUndirectedGraph<Vertex, Edge>(edgeFactory, true, true)
@@ -11,7 +9,7 @@ shared class Pseudograph<Vertex, Edge>(Edge edgeFactory(Vertex s, Vertex t))
 	class PseudographSpecifics() extends UndirectedSpecifics() {
 		
 		shared actual Integer degreeOf(Vertex v) {			
-			return edgeContainer(v).edges.fold(0, (Integer d, Edge e) => 
+			return edgeContainer(v).edges.fold(0)((Integer d, Edge e) => 
 					edgeSource(e) == edgeTarget(e) then d+2 else d+1);			
 		}		
 	}		

@@ -1,5 +1,6 @@
-import ceylon.collection { HashMap,  MutableMap }
-import org.omadac.graph.impl { Specifics, MutableEdge }
+import ceylon.collection { HashMap,  MutableMap,
+	HashSet }
+
 
 shared abstract class AbstractBaseGraph<Vertex, Edge> (Edge factory(Vertex s, Vertex t), 
 shared Boolean allowingMultipleEdges = false, 
@@ -44,7 +45,7 @@ shared Boolean allowingLoops = false)
         }
         
         if (!allowingLoops && source == target) {
-            throw AssertionException("loops not allowed");
+            throw AssertionError("loops not allowed");
         }
         
         Edge edge = factory(source, target);
@@ -69,7 +70,7 @@ shared Boolean allowingLoops = false)
         }
         
         if (!allowingLoops && source == target) {
-            throw AssertionException("loops not allowed");
+            throw AssertionError("loops not allowed");
         }
         
         value mutableEdge = createMutableEdge(edge, source, target);
@@ -108,14 +109,14 @@ shared Boolean allowingLoops = false)
     }
     
     shared actual Boolean containsEdge(Edge e) {
-        return edgeMap.contains(e);
+        return edgeMap.items.contains(e);
     }
     
     shared actual Boolean containsVertex(Vertex v) {
         return specifics.vertexSet.contains(v);
     }
     
-    shared actual Set<Edge> edgeSet => LazySet(edgeMap.keys);
+    shared actual Set<Edge> edgeSet => HashSet<Edge> { elements = edgeMap.keys; };
     
     
     shared actual Set<Edge> edgesOf(Vertex v) {
